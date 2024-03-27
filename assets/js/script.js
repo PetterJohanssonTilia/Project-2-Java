@@ -100,10 +100,8 @@ function checkAnswer(selectedAnswer) {
     // Check if selected answer is correct
     if (selectedWeight > otherWeight) {
         incrementScore();
-        alert("Correct!");
     } else {
         incrementWrongAnswer();
-        alert("Wrong!");
     }
 
     // Display new question
