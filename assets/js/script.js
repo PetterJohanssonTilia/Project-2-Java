@@ -1,5 +1,5 @@
 // ======== Game objects ============ //
-const categories = [animals, foods, culturalObjects, cars];
+
 
 const animals = [
     { name: "Elephant", weight: 5000, size: "big" },
@@ -33,17 +33,18 @@ const cars = [
     { name: "Bugatti Chiron", weight: 1995, size: "big" }
 ];
 
+const categories = [animals, foods, culturalObjects, cars];
 
 // Wait for the DOM to finish loading before running the game
 // Get the button elements and add event listeners to them
 document.addEventListener("DOMContentLoaded", function() {
     let buttons = document.getElementsByTagName("button");
-
+ 
     for (let button of buttons) {
         button.addEventListener("click", function() {
             if (this.getAttribute("data-type") === "submit") {
                 checkAnswer();
-            } else {
+            } else if (this.getAttribute("data-type") === "start") {
                 runGame();
             }
         })
