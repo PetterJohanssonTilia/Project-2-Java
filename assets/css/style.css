@@ -1,0 +1,24 @@
+/* General styles */
+body {
+    background-color: rgb(1, 22, 13);
+    color: antiquewhite;
+}
+
+/* Game section */
+
+#game-section {
+    display: flex;
+    background-color: rgb(128, 150, 150);
+    justify-content: center;
+}
+
+.guess-box {
+    background-color: blueviolet;
+    border: 3px solid black;
+    width: 40%;
+    height: 70vh;
+    text-align: center;
+    
+
+}
+
