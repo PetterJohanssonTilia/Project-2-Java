@@ -1,3 +1,29 @@
+// Wait for the DOM to finish loading before running the game
+// Get the button elements and add event listeners to them
+document.addEventListener("DOMContentLoaded", function() {
+    let buttons = document.getElementsByClassName("guess-box");
+
+    for (let button of buttons) {
+        button.addEventListener("click", function() {
+            if (this.getAttribute("data-type") === "submit") {
+                checkAnswer();
+            } else {
+                runGame();
+            }
+        })
+    }
+
+    //Listens for key down ENTER for checkanswer
+    document.getElementById("answer-box").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            checkAnswer();
+        }
+    })
+
+    runGame();
+
+})
+
 // ======== Game objects ============ //
 
 const animals = [
