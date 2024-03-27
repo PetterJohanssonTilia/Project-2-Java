@@ -21,7 +21,15 @@ header {
     width: 40%;
     height: 70vh;
     text-align: center;
-    
-
 }
 
+#scores{
+    display: flex;
+    justify-content: center;
+}
+#scoreChart {
+    background-color: rgb(31, 24, 15);
+    width: 500px;
+    height: 200px;
+
+}

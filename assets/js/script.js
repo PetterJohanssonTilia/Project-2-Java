@@ -1,5 +1,6 @@
-// ======== Game objects ============ //
 
+
+// ======== Game objects ======== //
 
 const animals = [
     { name: "Elephant", weight: 5000, size: "big" },
@@ -35,9 +36,21 @@ const cars = [
 
 const categories = [animals, foods, culturalObjects, cars];
 
-// Global score variable
+// ======== Global score variable ======== //
 let score = 0;
 let wrongAnswers = 0;
+
+// ======== Chart variables ======== //
+var canvasElement = document.getElementById("scoreChart");
+var config = {
+    type: "bar",
+    data: {
+        labels: ["Animals", "Foods", "Culture", "Cars"],
+        datasets: [{ label: "Score", data: [5, 2, 3, 4] }],
+    },
+};
+// Javascript from chart.js
+var scoreChart = new Chart(canvasElement, config)
 
 // Add event listeners to operand divs (left and righ guess-box)
 document.getElementById("operand1").addEventListener("click", function() {
