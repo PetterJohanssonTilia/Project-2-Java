@@ -36,9 +36,8 @@ const cars = [
 
 const categories = [animals, foods, culturalObjects, cars];
 
-// ======== Global score variable ======== //
-let score = 0;
-let wrongAnswers = 0;
+// ======== Scores (for the chart) ======== //
+let categoryScores = [0, 0, 0, 0]; // Initialize with initial scores
 
 // ======== Chart variables ======== //
 var canvasElement = document.getElementById("scoreChart");
@@ -49,10 +48,12 @@ var config = {
         datasets: [{ label: "Score", data: [5, 2, 3, 4] }],
     },
 };
+
 // Javascript from chart.js
 var scoreChart = new Chart(canvasElement, config)
 
-// Add event listeners to operand divs (left and righ guess-box)
+// ======== Event listeners ========//
+// listeners operand divs (left and righ guess-box)//
 document.getElementById("operand1").addEventListener("click", function() {
     checkAnswer(document.getElementById("operand1")); // Updated parameter passed to checkAnswer
 });
@@ -65,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     runGame();
 })
-
 
 /**
  * The main game "loop", called when the script is first loaded
@@ -83,7 +83,6 @@ function displayQuestion() {
     const category1 = categories[Math.floor(Math.random() * categories.length)];
     // Get random thing from the chosen category for operand1
     const thing1 = getRandomThing(category1);
-    
     // Get random category for operand2
     let category2;
     do {
@@ -91,7 +90,6 @@ function displayQuestion() {
     } while (category1 === category2); // Ensure different categories
     // Get random thing from the chosen category for operand2
     const thing2 = getRandomThing(category2);
-    
     // Apply multiplier to the smaller object
     let weightedThing1;
     let weightedThing2;
@@ -125,6 +123,16 @@ function displayQuestion() {
 }
 
 /**
+ * Function to get random things (Lion, apple, tower etc) inside category (Animals, Cars etc)
+ * 
+ */
+
+function getRandomThing(category) {
+    // Choose a random thing from the selected category
+    return category[Math.floor(Math.random() * category.length)];
+  }
+
+/**
  * 
  * Multipliers for different object sizes
  */
@@ -142,7 +150,7 @@ function calculateMultiplier(size) {
 }
 
  /**
-  * 
+  * By clicking you check the answer
   * Checks the answers for biggest weight
   * Checks the answers for their size (to add the multiplier to the smaller item)
   */
@@ -155,34 +163,43 @@ function checkAnswer(selectedAnswer) {
 
     // Check if selected answer is correct
     if (selectedWeight > otherWeight) {
-        incrementScore();
+        incrementCategoryScores();
     } else {
-        incrementWrongAnswer();
+        decrementCategoryScores();
     }
 
     // Display new question
     displayQuestion();
 }
 
-function incrementScore() {
-    score++;
-    document.getElementById("score").textContent = "Score: " + score;
+
+
+// ======== Score functions(for the chart) ======== //
+
+// Update the chart data with the new scores
+function updateChart() {
+    scoreChart.data.datasets[0].data = categoryScores;
+    scoreChart.update();
 }
 
-function incrementWrongAnswer() {
-    wrongAnswers++;
-    document.getElementById("wrong-answers").textContent = "Wrong Answers: " + wrongAnswers;
+// When the player's score increases
+function incrementCategoryScores() {
+    for (let i = 0; i < categoryScores.length; i++) {
+        categoryScores[i]++; // Increment all scores
+    }
+    updateChart(); // Update the chart with new scores
+}
+
+// When the player's score decreases
+function decrementCategoryScores() {
+    for (let i = 0; i < categoryScores.length; i++) {
+        if (categoryScores[i] > 0) {
+            categoryScores[i]--; // Decrease all scores, but ensure they don't go below 0
+        }
+    }
+    updateChart(); // Update the chart with new scores
 }
 
 
 
-/**
- * Function to get random things (Lion, apple, tower etc) inside category (Animals, Cars etc)
- * 
- */
-
-  function getRandomThing(category) {
-    // Choose a random thing from the selected category
-    return category[Math.floor(Math.random() * category.length)];
-  }
 
