@@ -52,7 +52,11 @@ var config = {
 // Javascript from chart.js
 var scoreChart = new Chart(canvasElement, config)
 
-// ======== Event listeners ========//
+
+
+
+// Wait for the DOM to finish loading before running the game
+document.addEventListener("DOMContentLoaded", function() {
 // listeners operand divs (left and righ guess-box)//
 document.getElementById("operand1").addEventListener("click", function() {
     checkAnswer(document.getElementById("operand1")); // Updated parameter passed to checkAnswer
@@ -60,10 +64,6 @@ document.getElementById("operand1").addEventListener("click", function() {
 document.getElementById("operand2").addEventListener("click", function() {
     checkAnswer(document.getElementById("operand2")); // Updated parameter passed to checkAnswer
 });
-
-// Wait for the DOM to finish loading before running the game
-document.addEventListener("DOMContentLoaded", function() {
-
     runGame();
 })
 
@@ -161,11 +161,15 @@ function checkAnswer(selectedAnswer) {
     // Get the weight of the other answer
     const otherWeight = parseFloat(selectedAnswer.id === "operand1" ? document.getElementById("operand2").dataset.weight : document.getElementById("operand1").dataset.weight);
 
+    // Get the categories displayed in operand1 and operand2
+    const operand1CategoryIndex = getCategoryIndexFromThing(document.getElementById("operand1").textContent);
+    const operand2CategoryIndex = getCategoryIndexFromThing(document.getElementById("operand2").textContent);
+
     // Check if selected answer is correct
     if (selectedWeight > otherWeight) {
-        incrementCategoryScores();
+        incrementCategoryScores([operand1CategoryIndex, operand2CategoryIndex]);
     } else {
-        decrementCategoryScores();
+        decrementCategoryScores([operand1CategoryIndex, operand2CategoryIndex]);
     }
 
     // Display new question
@@ -176,28 +180,59 @@ function checkAnswer(selectedAnswer) {
 
 // ======== Score functions(for the chart) ======== //
 
-// Update the chart data with the new scores
-function updateChart() {
-    scoreChart.data.datasets[0].data = categoryScores;
-    scoreChart.update();
+/**
+ *Update the chart data with the new scores 
+ *from the 2 displayed categories
+ */
+ function incrementCategoryScores() {
+    // Get the categories displayed in operand1 and operand2
+    const operand1CategoryIndex = getCategoryIndexFromThing(document.getElementById("operand1").textContent);
+    const operand2CategoryIndex = getCategoryIndexFromThing(document.getElementById("operand2").textContent);
+
+    // Increment scores for the categories displayed in operand1 and operand2
+    categoryScores[operand1CategoryIndex] += 1; // Increment by 1 for both categories
+    categoryScores[operand2CategoryIndex] += 1; // Increment by 1 for both categories
+
+    // Update the chart with new scores for these categories
+    updateChart([operand1CategoryIndex, operand2CategoryIndex]);
 }
 
-// When the player's score increases
-function incrementCategoryScores() {
-    for (let i = 0; i < categoryScores.length; i++) {
-        categoryScores[i]++; // Increment all scores
-    }
-    updateChart(); // Update the chart with new scores
-}
-
-// When the player's score decreases
-function decrementCategoryScores() {
-    for (let i = 0; i < categoryScores.length; i++) {
-        if (categoryScores[i] > 0) {
-            categoryScores[i]--; // Decrease all scores, but ensure they don't go below 0
+// Helper function to get the category index from the displayed thing
+function getCategoryIndexFromThing(thingName) {
+    for (let i = 0; i < categories.length; i++) {
+        for (let j = 0; j < categories[i].length; j++) {
+            if (categories[i][j].name === thingName) {
+                return i; // Return the category index if the thing is found
+            }
         }
     }
-    updateChart(); // Update the chart with new scores
+    return -1; // Return -1 if the thing is not found
+}
+
+
+// When the player's score decreases for categories displayed in operand1 and operand2
+function decrementCategoryScores() {
+    // Get the categories displayed in operand1 and operand2
+    const operand1CategoryIndex = getCategoryIndexFromThing(document.getElementById("operand1").textContent);
+    const operand2CategoryIndex = getCategoryIndexFromThing(document.getElementById("operand2").textContent);
+
+    // Decrement scores for the categories displayed in operand1 and operand2
+    categoryScores[operand1CategoryIndex] -= 1; // Decrement by 1 for both categories
+    categoryScores[operand2CategoryIndex] -= 1; // Decrement by 1 for both categories
+
+    // Update the chart with new scores for these categories
+    updateChart([operand1CategoryIndex, operand2CategoryIndex]);
+}
+
+function updateChart(updatedIndices) {
+    // Loop through the updated indices and update the corresponding data in the chart
+    updatedIndices.forEach(index => {
+        // Update the data for the category at the specified index
+        config.data.datasets[0].data[index] = categoryScores[index];
+    });
+
+    // Update the chart with the new data
+    scoreChart.update();
 }
 
 
