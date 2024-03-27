@@ -39,13 +39,21 @@ const categories = [animals, foods, culturalObjects, cars];
 let score = 0;
 let wrongAnswers = 0;
 
+// Add event listeners to operand divs (left and righ guess-box)
+document.getElementById("operand1").addEventListener("click", function() {
+    checkAnswer(document.getElementById("operand1")); // Updated parameter passed to checkAnswer
+});
+document.getElementById("operand2").addEventListener("click", function() {
+    checkAnswer(document.getElementById("operand2")); // Updated parameter passed to checkAnswer
+});
+
 // Wait for the DOM to finish loading before running the game
 document.addEventListener("DOMContentLoaded", function() {
-// Add event listeners to operand divs (left and righ guess-box)
-    document.getElementById("operand1").addEventListener("click", displayQuestion);
-    document.getElementById("operand2").addEventListener("click", displayQuestion);
+
+
     runGame();
 })
+
 
 /**
  * The main game "loop", called when the script is first loaded
