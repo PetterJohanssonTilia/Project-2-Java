@@ -4,6 +4,9 @@ body {
     color: antiquewhite;
 }
 
+header {
+    text-align: center;
+}
 /* Game section */
 
 #game-section {
