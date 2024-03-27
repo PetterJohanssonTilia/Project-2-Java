@@ -1,7 +1,7 @@
 // Wait for the DOM to finish loading before running the game
 // Get the button elements and add event listeners to them
 document.addEventListener("DOMContentLoaded", function() {
-    let buttons = document.getElementsByClassName("guess-box");
+    let buttons = document.getElementsByTagName("button");
 
     for (let button of buttons) {
         button.addEventListener("click", function() {
@@ -12,17 +12,24 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
     }
-
-    //Listens for key down ENTER for checkanswer
-    document.getElementById("answer-box").addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            checkAnswer();
-        }
-    })
-
     runGame();
-
 })
+
+function runGame(){}
+
+
+function checkAnswer(){}
+
+function calculateCorrectAnswer(){}
+
+
+function incrementScore(){}
+
+function incrementWrongAnswer(){}
+
+function displayQuestion() {}
+
+
 
 // ======== Game objects ============ //
 
