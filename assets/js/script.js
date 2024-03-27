@@ -35,8 +35,15 @@ const cars = [
 
 const categories = [animals, foods, culturalObjects, cars];
 
+// Global score variable
+let score = 0;
+let wrongAnswers = 0;
+
 // Wait for the DOM to finish loading before running the game
 document.addEventListener("DOMContentLoaded", function() {
+// Add event listeners to operand divs (left and righ guess-box)
+    document.getElementById("operand1").addEventListener("click", displayQuestion);
+    document.getElementById("operand2").addEventListener("click", displayQuestion);
     runGame();
 })
 
@@ -47,15 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
 function runGame(){
     displayQuestion();
 }
-
-
-function checkAnswer(){}
-
-function calculateCorrectAnswer(){}
-
-function incrementScore(){}
-
-function incrementWrongAnswer(){}
 
 function displayQuestion() {
     // Get random category for operand1 (Left question-box)
@@ -78,8 +76,44 @@ function displayQuestion() {
     // Display random thing for operand2
     const operand2Div = document.getElementById("operand2");
     operand2Div.textContent = thing2.name;
-  }
-  
+    
+    // Set correct answer
+    operand1Div.dataset.weight = thing1.weight;
+    operand2Div.dataset.weight = thing2.weight;
+}
+ 
+function checkAnswer(selectedAnswer) {
+    // Get the weight of selected answer
+    const selectedWeight = parseFloat(selectedAnswer.dataset.weight);
+
+    // Get the weight of the other answer
+    const otherWeight = parseFloat(selectedAnswer.id === "operand1" ? document.getElementById("operand2").dataset.weight : document.getElementById("operand1").dataset.weight);
+
+    // Check if selected answer is correct
+    if (selectedWeight > otherWeight) {
+        incrementScore();
+        alert("Correct!");
+    } else {
+        incrementWrongAnswer();
+        alert("Wrong!");
+    }
+
+    // Display new question
+    displayQuestion();
+}
+
+function incrementScore() {
+    score++;
+    document.getElementById("score").textContent = "Score: " + score;
+}
+
+function incrementWrongAnswer() {
+    wrongAnswers++;
+    document.getElementById("wrong-answers").textContent = "Wrong Answers: " + wrongAnswers;
+}
+
+
+
 /**
  * Function to get random things (Lion, apple, tower etc) inside category (Animals, Cars etc)
  * 
