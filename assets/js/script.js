@@ -21,7 +21,7 @@ const culturalObjects = [
     { name: "Eiffel Tower", weight: 7300, size: "huge" },
     { name: "Mona Lisa", weight: 0.8, size: "tiny" },
     { name: "Great Wall of China", weight: 70000000, size: "huge" },
-    { name: "Rosetta Stone", weight: 0.762, size: "huge" },
+    { name: "Rosetta Stone", weight: 0.762, size: "tiny" },
     { name: "Taj Mahal", weight: 16340000, size: "huge" }
 ];
 
@@ -50,7 +50,6 @@ document.getElementById("operand2").addEventListener("click", function() {
 // Wait for the DOM to finish loading before running the game
 document.addEventListener("DOMContentLoaded", function() {
 
-
     runGame();
 })
 
@@ -63,33 +62,77 @@ function runGame(){
     displayQuestion();
 }
 
+/**
+ * Randomly picks objects to display on each side of the screen
+ */
 function displayQuestion() {
     // Get random category for operand1 (Left question-box)
     const category1 = categories[Math.floor(Math.random() * categories.length)];
     // Get random thing from the chosen category for operand1
     const thing1 = getRandomThing(category1);
+    
     // Get random category for operand2
     let category2;
     do {
       category2 = categories[Math.floor(Math.random() * categories.length)];
     } while (category1 === category2); // Ensure different categories
-  
     // Get random thing from the chosen category for operand2
     const thing2 = getRandomThing(category2);
-  
-    // Display random thing for operand1
-    const operand1Div = document.getElementById("operand1");
-    operand1Div.textContent = thing1.name;
-  
-    // Display random thing for operand2
-    const operand2Div = document.getElementById("operand2");
-    operand2Div.textContent = thing2.name;
     
-    // Set correct answer
-    operand1Div.dataset.weight = thing1.weight;
-    operand2Div.dataset.weight = thing2.weight;
+    // Apply multiplier to the smaller object
+    let weightedThing1;
+    let weightedThing2;
+    if (thing1.weight <= thing2.weight) {
+        const multiplier1 = calculateMultiplier(thing1.size);
+        weightedThing1 = {
+            name: `${multiplier1}x ${thing1.name}`,
+            weight: thing1.weight * multiplier1
+        };
+        weightedThing2 = thing2;
+    } else {
+        const multiplier2 = calculateMultiplier(thing2.size);
+        weightedThing2 = {
+            name: `${multiplier2}x ${thing2.name}`,
+            weight: thing2.weight * multiplier2
+        };
+        weightedThing1 = thing1;
+    }
+    
+     // Display random thing for operand1 with multiplier
+     const operand1Div = document.getElementById("operand1");
+     operand1Div.textContent = weightedThing1.name;
+     // Add weight data to the element
+     operand1Div.dataset.weight = weightedThing1.weight; 
+   
+    // Display random thing for operand2 with multiplier
+    const operand2Div = document.getElementById("operand2");
+    operand2Div.textContent = weightedThing2.name; // Use weightedThing2 instead of thing2
+    // Add weight data to the element
+    operand2Div.dataset.weight = weightedThing2.weight; // Use weightedThing2 instead of thing2
 }
- 
+
+/**
+ * 
+ * Multipliers for different object sizes
+ */
+function calculateMultiplier(size) {
+    switch (size) {
+        case "tiny":
+            return Math.floor(Math.random() * 500) + 1;
+        case "small":
+            return Math.floor(Math.random() * 500) + 1;
+        case "big":
+            return Math.floor(Math.random() * 1500) + 1;
+        default:
+            return 1; // No multiplier for huge items
+    }
+}
+
+ /**
+  * 
+  * Checks the answers for biggest weight
+  * Checks the answers for their size (to add the multiplier to the smaller item)
+  */
 function checkAnswer(selectedAnswer) {
     // Get the weight of selected answer
     const selectedWeight = parseFloat(selectedAnswer.dataset.weight);
